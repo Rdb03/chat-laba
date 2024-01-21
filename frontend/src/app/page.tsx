@@ -1,95 +1,85 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+import { Box, Button, Grid, TextField } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import { useQuery } from '@tanstack/react-query';
+import axiosApi from '@/axiosApi';
+import { Messages } from '@/type';
 
 export default function Home() {
+  const query = useQuery({
+    queryKey: ['messages'],
+    queryFn: async () => {
+     const messagesResponse = await axiosApi.get<Messages[]>('/messages');
+     return messagesResponse.data;
+    },
+  });
+
+  console.log(query.data);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <Grid
+        display="grid"
+        container
+        spacing={2}
+        sx={{
+          flexGrow: 1,
+          background:'white',
+      }}
+        width="800px"
+        height="600px"
+        padding="20px"
+        margin="200px auto"
+        border="1px solid grey"
+        overflow='hidden'
+      >
+        <Grid
+          sx={{
+            border: '1px solid grey',
+            height: '400px',
+            marginBottom: '20px',
+            background: 'white'
+          }}
+        >
+        </Grid>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2, alignItems: 'center',
+              flexWrap: 'wrap'
+          }}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+            <TextField
+              sx={{
+                width: '150px'
+              }}
+              required
+              id="standard-read-only-input"
+              label="Author"
+              defaultValue=""
+              variant="standard"
             />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <TextField
+              sx={{
+                width: '450px'
+              }}
+              required
+              id="outlined-required"
+              label="Message"
+              defaultValue=""
+            />
+            <Button variant="contained">
+              Send
+              <SendIcon sx={{marginLeft: '10px'}}/>
+            </Button>
+          </Box>
+        </form>
+      </Grid>
+    </>
   );
 }
