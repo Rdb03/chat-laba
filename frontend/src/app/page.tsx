@@ -13,7 +13,6 @@ export default function Home() {
     message: '',
   });
 
-
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     setState(prevState => ({
@@ -27,7 +26,7 @@ export default function Home() {
     queryFn: async () => {
       let url = '/messages?datetime=';
 
-      if (messages && messages.length > 0) {
+      if (messages && messages.length) {
         url = url + messages[messages.length - 1].dateTime;
       }
 

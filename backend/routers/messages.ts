@@ -12,8 +12,8 @@ messageRouter.get('/', async (req, res) => {
 
 messageRouter.get('/:id', async (req, res) => {
     const messages = await fileDb.getItems();
-    const product = messages.find(m => m.id === req.params.id);
-    res.send(product);
+    const message = messages.find(m => m.id === req.params.id);
+    res.send(message);
 });
 
 messageRouter.post('/', async (req, res) => {
