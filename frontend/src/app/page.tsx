@@ -1,17 +1,19 @@
 'use client';
-import { Box, Button, CircularProgress, Grid, TextField } from '@mui/material';
+import { Box, CircularProgress, Grid, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axiosApi from '@/axiosApi';
 import { Messages, MessagesMutation } from '@/type';
 import MessageItem from '@/components/MessageItem/MessageItem';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 export default function Home() {
   const [state, setState] = useState<MessagesMutation>({
     author: '',
     message: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -39,7 +41,9 @@ export default function Home() {
 
   const mutation = useMutation({
     mutationFn: async (messageData: MessagesMutation) => {
+      setLoading(true);
       await axiosApi.post('/messages', messageData);
+      setLoading(false);
     },
   });
 
@@ -126,10 +130,15 @@ export default function Home() {
               label="Message"
               onChange={inputChangeHandler}
             />
-            <Button type="submit" variant="contained">
-              Send
-              <SendIcon sx={{marginLeft: '10px'}}/>
-            </Button>
+            <LoadingButton
+              type="submit"
+              endIcon={<SendIcon />}
+              loading={loading}
+              loadingPosition="end"
+              variant="contained"
+            >
+              <span>Send</span>
+            </LoadingButton>
           </Box>
         </form>
       </Grid>
