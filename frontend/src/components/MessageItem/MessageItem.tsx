@@ -8,9 +8,6 @@ interface Props {
 }
 
 const MessageItem: React.FC<Props> = ({message}) => {
-
-  console.log(message );
-
   return (
     <Box sx={{
       border: '1px solid black',

@@ -31,8 +31,6 @@ export default function Home() {
     refetchInterval: 3000,
   });
 
-  console.log(messages);
-
   const mutation = useMutation({
     mutationFn: async (messageData: MessagesMutation) => {
       await axiosApi.post('/messages', messageData);

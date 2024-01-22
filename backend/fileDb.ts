@@ -19,7 +19,7 @@ const fileDb = {
     },
     async addItem(item: MessageWithOutId) {
       const id = crypto.randomUUID();
-      const dateTime = dayjs().format();
+      const dateTime = dayjs().toISOString();
       const message = {id, dateTime, ...item}
       data.push(message);
       await this.save();
