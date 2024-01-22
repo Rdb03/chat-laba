@@ -6,7 +6,7 @@ const messageRouter = Router();
 
 messageRouter.get('/', async (req, res) => {
     const messages = await fileDb.getItems();
-    const get30Messages = messages.slice(0, -30);
+    const get30Messages = messages.slice(-30);
     res.send(get30Messages);
 });
 

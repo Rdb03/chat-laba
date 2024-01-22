@@ -13,6 +13,7 @@ export default function Home() {
     message: '',
   });
 
+
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     setState(prevState => ({
@@ -21,11 +22,17 @@ export default function Home() {
     }));
   };
 
-  const {data: messages, isLoading} = useQuery({
+  const { data: messages, isLoading } = useQuery({
     queryKey: ['messages'],
     queryFn: async () => {
-     const messagesResponse = await axiosApi.get<Messages[]>('/messages');
-     return messagesResponse.data;
+      let url = '/messages?datetime=';
+
+      if (messages && messages.length > 0) {
+        url = url + messages[messages.length - 1].dateTime;
+      }
+
+      const messagesResponse = await axiosApi.get<Messages[]>(url);
+      return messagesResponse.data;
     },
     staleTime: 2000,
     refetchInterval: 3000,
@@ -54,7 +61,7 @@ export default function Home() {
         message={message}
         key={message.id}
       />
-    ))
+    ));
   }
 
   return (
@@ -65,8 +72,8 @@ export default function Home() {
         spacing={2}
         sx={{
           flexGrow: 1,
-          background:'white',
-      }}
+          background: 'white',
+        }}
         width="800px"
         height="600px"
         padding="20px"
@@ -86,14 +93,14 @@ export default function Home() {
         </Grid>
         <form
           onSubmit={submitFormHandler
-        }
+          }
         >
           <Box
             sx={{
               display: 'flex',
               gap: 2, alignItems: 'center',
               flexWrap: 'wrap'
-          }}
+            }}
           >
             <TextField
               sx={{
