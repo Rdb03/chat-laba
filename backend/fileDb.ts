@@ -1,4 +1,5 @@
 import {promises as fs} from 'fs';
+import dayjs from 'dayjs';
 import {Messages, MessageWithOutId} from "./type";
 
 const fileName = './db.json';
@@ -18,10 +19,10 @@ const fileDb = {
     },
     async addItem(item: MessageWithOutId) {
       const id = crypto.randomUUID();
-      const message = {id, ...item}
+      const dateTime = dayjs().format();
+      const message = {id, dateTime, ...item}
       data.push(message);
       await this.save();
-
       return message;
     },
     async save() {

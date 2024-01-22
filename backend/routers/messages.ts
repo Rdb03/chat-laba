@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import {Router} from "express";
 import fileDb from "../fileDb";
 import {MessageWithOutId} from "../type";
@@ -17,8 +16,6 @@ messageRouter.get('/:id', async (req, res) => {
 });
 
 messageRouter.post('/', async (req, res) => {
-    console.log(req.body);
-
     const message: MessageWithOutId = {
         author: req.body.author,
         message: req.body.message,

@@ -11,7 +11,6 @@ app.use(cors());
 
 app.use('/messages', messageRouter);
 
-
 const run = async () => {
     await fileDb.init();
 

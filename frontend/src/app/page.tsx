@@ -1,20 +1,63 @@
 'use client';
-import { Box, Button, Grid, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, TextField } from '@mui/material';
+import React, { useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axiosApi from '@/axiosApi';
-import { Messages } from '@/type';
+import { Messages, MessagesMutation } from '@/type';
+import MessageItem from '@/components/MessageItem/MessageItem';
 
 export default function Home() {
-  const query = useQuery({
+  const [state, setState] = useState<MessagesMutation>({
+    author: '',
+    message: '',
+  });
+
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    setState(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const {data: messages, isLoading} = useQuery({
     queryKey: ['messages'],
     queryFn: async () => {
      const messagesResponse = await axiosApi.get<Messages[]>('/messages');
      return messagesResponse.data;
     },
+    staleTime: 2000,
+    refetchInterval: 3000,
   });
 
-  console.log(query.data);
+  console.log(messages);
+
+  const mutation = useMutation({
+    mutationFn: async (messageData: MessagesMutation) => {
+      await axiosApi.post('/messages', messageData);
+    },
+  });
+
+  const onSubmit = () => {
+    mutation.mutate(state);
+  };
+
+  const submitFormHandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit();
+  };
+
+  let messageArea: React.ReactNode = <CircularProgress/>;
+
+  if (!isLoading && messages) {
+    messageArea = messages.map(message => (
+      <MessageItem
+        message={message}
+        key={message.id}
+      />
+    ))
+  }
 
   return (
     <>
@@ -31,21 +74,21 @@ export default function Home() {
         padding="20px"
         margin="200px auto"
         border="1px solid grey"
-        overflow='hidden'
       >
         <Grid
           sx={{
             border: '1px solid grey',
             height: '400px',
             marginBottom: '20px',
-            background: 'white'
+            background: 'white',
+            overflowY: 'auto'
           }}
         >
+          {messages?.length !== 0 && messageArea}
         </Grid>
         <form
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
+          onSubmit={submitFormHandler
+        }
         >
           <Box
             sx={{
@@ -59,21 +102,27 @@ export default function Home() {
                 width: '150px'
               }}
               required
-              id="standard-read-only-input"
+              id="author"
+              name="author"
+              value={state.author}
               label="Author"
-              defaultValue=""
               variant="standard"
+              type="text"
+              onChange={inputChangeHandler}
             />
             <TextField
               sx={{
                 width: '450px'
               }}
               required
-              id="outlined-required"
+              id="message"
+              type="text"
+              name="message"
+              value={state.message}
               label="Message"
-              defaultValue=""
+              onChange={inputChangeHandler}
             />
-            <Button variant="contained">
+            <Button type="submit" variant="contained">
               Send
               <SendIcon sx={{marginLeft: '10px'}}/>
             </Button>
