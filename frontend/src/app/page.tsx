@@ -49,6 +49,10 @@ export default function Home() {
 
   const onSubmit = () => {
     mutation.mutate(state);
+    setState(prevState => ({
+      ...prevState,
+      message: '',
+    }));
   };
 
   const submitFormHandler = async (e: React.FormEvent) => {
